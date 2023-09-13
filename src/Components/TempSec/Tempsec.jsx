@@ -10,11 +10,19 @@ const [search ,setSearch] = useState("Mumbai");
     useEffect( ()=>{
       const fetchApi = async ()=>{
         const url = `http://api.openweathermap.org/data/2.5/weather?q=${search}&units=metric&appid=${apiid}`;
-        const response = await fetch(url);
-        // console.log(response);
-        const resJson = await response.json();
-        // console.log(resJson);
-        setCity(resJson.main);
+          try {
+            const response = await fetch(url);
+            
+            if (!response.ok) {
+                alert("something went wrong...Please try again")
+                throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
+            }
+            
+            const resJson = await response.json();
+            setCity(resJson.main);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
       };
       fetchApi();
     },[search])
